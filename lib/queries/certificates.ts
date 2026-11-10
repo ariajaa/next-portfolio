@@ -3,13 +3,22 @@ import { Certificate } from '../types';
 
 export const fallbackCertificates: Certificate[] = [
   {
+    id: 7,
+    title: 'Kuliah Umum Gemini Academy for Higher Education',
+    issuer: 'Google for Education × Paideia',
+    year: '2026',
+    credential_url: '/assets/uploads/certificates/SERTIFIKASI%20GEMINI.pdf',
+    image_file: 'Sertifikat Kuliah Umum Gemini.jpg',
+    order_index: 0,
+  },
+  {
     id: 6,
     title: 'Gemini Academy for Higher Education',
     issuer: 'Google for Education × Paideia',
     year: '2026',
     credential_url: '/assets/uploads/certificates/SERTIFIKASI%20GEMINI.pdf',
     image_file: 'SERTIFIKASI GEMINI.png',
-    order_index: 0,
+    order_index: 1,
   },
   {
     id: 1,

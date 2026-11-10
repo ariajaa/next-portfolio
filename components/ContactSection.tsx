@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Profile } from '../lib/types';
 
 interface ContactSectionProps {
@@ -10,14 +10,17 @@ interface ContactSectionProps {
 export default function ContactSection({ profile }: ContactSectionProps) {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
+  const formRef = useRef<HTMLFormElement>(null);
 
   const cleanWhatsapp = profile.whatsapp.replace(/[^0-9]/g, '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setFeedback(null);
+    setStatus('idle');
+    setStatusMessage('');
 
     try {
       const res = await fetch('/api/contact', {
@@ -28,25 +31,24 @@ export default function ContactSection({ profile }: ContactSectionProps) {
 
       const result = await res.json();
       if (res.ok && result.success) {
-        setFeedback({
-          type: 'success',
-          text: result.message || 'Pesan Anda berhasil dikirim! Terima kasih telah menghubungi.',
-        });
+        setStatus('success');
+        setStatusMessage(result.message || 'Pesan Anda berhasil dikirim! Terima kasih telah menghubungi.');
         setFormData({ name: '', email: '', message: '' });
       } else {
-        setFeedback({
-          type: 'error',
-          text: result.message || 'Gagal mengirim pesan. Silakan coba beberapa saat lagi.',
-        });
+        setStatus('error');
+        setStatusMessage(result.message || 'Gagal mengirim pesan. Silakan coba beberapa saat lagi.');
       }
     } catch {
-      setFeedback({
-        type: 'error',
-        text: 'Terjadi gangguan koneksi jaringan. Coba lagi nanti.',
-      });
+      setStatus('error');
+      setStatusMessage('Terjadi gangguan koneksi jaringan. Coba lagi nanti.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const dismissStatus = () => {
+    setStatus('idle');
+    setStatusMessage('');
   };
 
   return (
@@ -92,17 +94,48 @@ export default function ContactSection({ profile }: ContactSectionProps) {
           </div>
 
           <div className="contact-form" data-reveal>
-            {feedback && (
-              <div
-                className={`alert ${feedback.type === 'success' ? 'alert-success' : 'alert-error'}`}
-                role="status"
-                aria-live="polite"
-              >
-                {feedback.text}
-              </div>
-            )}
+            <div
+              className="alert-slot"
+              role="status"
+              aria-live="polite"
+            >
+              {status !== 'idle' && (
+                <div className={`alert alert-${status}`}>
+                  <span className="alert-icon" aria-hidden="true">
+                    {status === 'success' ? '✓' : '!'}
+                  </span>
+                  <div className="alert-body">
+                    <strong>{status === 'success' ? 'Terima kasih!' : 'Terjadi Kesalahan'}</strong>
+                    <p>{statusMessage}</p>
+                  </div>
+                  <div className="alert-actions">
+                    <button type="button" className="link-plain" onClick={dismissStatus}>
+                      Tutup
+                    </button>
+                    {status === 'error' && (
+                      <a
+                        href={`mailto:${profile.email}`}
+                        className="link-plain"
+                      >
+                        Email Langsung
+                      </a>
+                    )}
+                    {status === 'success' && (
+                      <a
+                        href={`https://wa.me/${cleanWhatsapp}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-plain"
+                      >
+                        Lanjut ke WhatsApp
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
-            <form onSubmit={handleSubmit}>
+            <form ref={formRef} onSubmit={handleSubmit}>
               <div className="field">
                 <label htmlFor="name">Nama Lengkap</label>
                 <input
@@ -114,6 +147,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   maxLength={100}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  disabled={loading}
                 />
               </div>
 
@@ -128,6 +162,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   maxLength={100}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  disabled={loading}
                 />
               </div>
 
@@ -142,12 +177,17 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  disabled={loading}
                 ></textarea>
               </div>
 
               <button type="submit" className="btn-solid" disabled={loading}>
+                {loading && <span className="btn-spinner" aria-hidden="true" />}
                 {loading ? 'Mengirim...' : 'Kirim Pesan'}
               </button>
+              <p className="form-status" aria-live="off">
+                Data yang dikirim akan disimpan ke database. Jika layanan belum aktif, tombol akan menawarkan opsi email/WhatsApp.
+              </p>
             </form>
           </div>
         </div>

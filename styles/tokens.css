@@ -1,16 +1,26 @@
-/* Design tokens: satu sumber untuk halaman publik dan admin. */
+/* Design tokens: satu sumber untuk halaman publik dan admin.
+   Dua suasana dari dunia yang sama: arsip cetak malam (default) dan siang.
+   Akar situs memakai tinta gelap; mode cerah memakai kertas hangat, bukan putih. */
 
 :root {
-  --paper: #f3f3ee;
-  --paper-2: #e9e9e2;
-  --ink: #12120f;
-  --ink-muted: #5f5f58;
-  --rule: #d9d9d2;
-  --rule-strong: #12120f;
-  --accent: #2337e8;
-  --accent-soft: #e6e8fd;
-  --success: #1c6b4a;
-  --danger: #b3261e;
+  color-scheme: dark;
+
+  --paper: #101210;
+  --paper-2: #171a15;
+  --ink: #f1eee4;
+  --ink-muted: #a6a49a;
+  --rule: #2c2f27;
+  --rule-strong: #f1eee4;
+  --accent: #8b95ff;
+  --accent-soft: #171b29;
+  --success: #6ed3a1;
+  --success-soft: #12241c;
+  --danger: #ff9c92;
+  --danger-soft: #261514;
+  --scrim: rgba(8, 9, 7, 0.86);
+  --wash:
+    radial-gradient(60rem 40rem at 82% -12%, rgba(139, 149, 255, 0.14), transparent 62%),
+    radial-gradient(50rem 36rem at 0% 8%, rgba(110, 211, 161, 0.06), transparent 55%);
 
   --font-sans: var(--font-archivo), system-ui, -apple-system, 'Segoe UI', sans-serif;
 
@@ -31,10 +41,32 @@
   --dur: 200ms;
 }
 
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --paper: #ece5d8;
+  --paper-2: #e2d9c8;
+  --ink: #14130e;
+  --ink-muted: #57534a;
+  --rule: #cdc3b0;
+  --rule-strong: #14130e;
+  --accent: #2337e8;
+  --accent-soft: #dfe2f9;
+  --success: #1c6b4a;
+  --success-soft: #d8e8dd;
+  --danger: #a8231b;
+  --danger-soft: #f2dcd8;
+  --scrim: rgba(20, 19, 14, 0.8);
+  --wash:
+    radial-gradient(60rem 40rem at 82% -12%, rgba(35, 55, 232, 0.1), transparent 62%),
+    radial-gradient(50rem 36rem at 0% 8%, rgba(181, 120, 26, 0.12), transparent 55%);
+}
+
 /* Admin memakai sisi tinta dari dunia yang sama. */
 .admin-layout,
 .login-body,
 .admin-loading {
+  color-scheme: dark;
   --bg-primary: #14140f;
   --bg-secondary: #1b1b15;
   --bg-card: #1b1b15;
