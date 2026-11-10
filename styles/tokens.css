@@ -1,0 +1,56 @@
+/* Design tokens: satu sumber untuk halaman publik dan admin. */
+
+:root {
+  --paper: #f3f3ee;
+  --paper-2: #e9e9e2;
+  --ink: #12120f;
+  --ink-muted: #5f5f58;
+  --rule: #d9d9d2;
+  --rule-strong: #12120f;
+  --accent: #2337e8;
+  --accent-soft: #e6e8fd;
+  --success: #1c6b4a;
+  --danger: #b3261e;
+
+  --font-sans: var(--font-archivo), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: clamp(1.5rem, 2.2vw, 2rem);
+  --step-3: clamp(1.9rem, 3.2vw, 2.75rem);
+  --step-4: clamp(2.6rem, 6vw, 5.25rem);
+
+  --shell: 1280px;
+  --gutter: clamp(1rem, 2.5vw, 2rem);
+  --section-y: clamp(4rem, 8vw, 8rem);
+  --header-h: 4.5rem;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 200ms;
+}
+
+/* Admin memakai sisi tinta dari dunia yang sama. */
+.admin-layout,
+.login-body,
+.admin-loading {
+  --bg-primary: #14140f;
+  --bg-secondary: #1b1b15;
+  --bg-card: #1b1b15;
+  --bg-card-hover: #23231c;
+  --bg-sidebar: #10100c;
+  --accent-mint: #8b95ff;
+  --accent-mint-hover: #a5adff;
+  --accent-mint-glow: transparent;
+  --accent-red: #f87171;
+  --text-primary: #f3f3ee;
+  --text-secondary: #c9c9c0;
+  --text-muted: #a3a39a;
+  --border-color: #2e2e26;
+  --border-highlight: #8b95ff;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-full: 0;
+}
