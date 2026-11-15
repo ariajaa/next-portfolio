@@ -4,9 +4,9 @@ import { Experience } from '../types';
 export const fallbackExperiences: Experience[] = [
   {
     id: 1,
-    role: 'Anggota Aktif',
+    role: 'Staff Informasi dan Komunikasi',
     organization: 'BEM Fakultas Teknik dan Informatika',
-    period: '2023 - Sekarang',
+    period: '2026 - Sekarang',
     type: 'Organisasi',
     description:
       'Berpartisipasi aktif dalam kegiatan kemahasiswaan, kepanitiaan program kerja fakultas, serta mengasah keterampilan komunikasi dan kepemimpinan dalam lingkup organisasi kampus.',
@@ -14,9 +14,9 @@ export const fallbackExperiences: Experience[] = [
   },
   {
     id: 2,
-    role: 'Staf / Pengalaman Kerja',
+    role: 'Staff Packing',
     organization: 'PT. Jusfluff Nusantara Indonesia',
-    period: '2023 - 2024',
+    period: '2025 - 2026',
     type: 'Pekerjaan',
     description:
       'Mendukung operasional harian, manajemen tugas secara terstruktur, kolaborasi antar divisi, serta penerapan kedisiplinan kerja profesional.',
@@ -26,7 +26,7 @@ export const fallbackExperiences: Experience[] = [
     id: 3,
     role: 'Staf Operasional',
     organization: 'Fotocopy Pantes Pemalang',
-    period: '2021 - 2022',
+    period: '2023 - 2024',
     type: 'Pekerjaan',
     description:
       'Melayani kebutuhan percetakan, pengolahan dokumen digital, administrasi ringan, serta pelayanan konsumen dengan standar kepuasan yang tinggi.',
@@ -36,7 +36,7 @@ export const fallbackExperiences: Experience[] = [
     id: 4,
     role: 'Mahasiswa Sarjana (S1)',
     organization: 'Universitas PGRI Semarang',
-    period: '2022 - Sekarang',
+    period: '2024 - Sekarang',
     type: 'Pendidikan',
     description:
       'Menempuh pendidikan sarjana Program Studi Informatika dengan fokus pembelajaran algoritma pemrograman, rekayasa perangkat lunak, basis data, dan desain antarmuka pengguna.',
