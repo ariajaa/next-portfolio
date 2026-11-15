@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useLanguage } from '../lib/context/LanguageContext';
 
 type IconName = 'github' | 'instagram' | 'whatsapp' | 'mail' | 'arrowUp';
 
@@ -59,13 +60,13 @@ function FooterIcon({ name }: { name: IconName }) {
   );
 }
 
-const NAV_LINKS = [
-  { href: '#home', label: 'Beranda' },
-  { href: '#about', label: 'Tentang Saya' },
-  { href: '#skills', label: 'Keahlian' },
-  { href: '#portfolio', label: 'Portofolio' },
-  { href: '#experience', label: 'Pengalaman' },
-  { href: '#contact', label: 'Kontak' },
+const NAV_KEYS = [
+  { href: '#home', key: 'home' as const },
+  { href: '#about', key: 'about' as const },
+  { href: '#skills', key: 'skills' as const },
+  { href: '#portfolio', key: 'portfolio' as const },
+  { href: '#experience', key: 'experience' as const },
+  { href: '#contact', key: 'contact' as const },
 ];
 
 const SOCIAL_LINKS = [
@@ -92,6 +93,7 @@ const SOCIAL_LINKS = [
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
@@ -106,18 +108,16 @@ export default function Footer() {
             <a href="#home" className="footer-logo" aria-label="Juniari.dev, kembali ke awal">
               Juniari<span>.dev</span>
             </a>
-            <p className="footer-tagline">
-              Membangun pengalaman web modern dengan presisi kode, tipografi tajam, dan eksplorasi digital kreatif.
-            </p>
+            <p className="footer-tagline">{t.footer.tagline}</p>
           </div>
 
           <div className="footer-col">
-            <p className="footer-heading">Navigasi</p>
+            <p className="footer-heading">{t.footer.navigation}</p>
             <ul className="footer-nav-list">
-              {NAV_LINKS.map((link) => (
+              {NAV_KEYS.map((link) => (
                 <li key={link.href}>
                   <a href={link.href} className="footer-nav-link">
-                    {link.label}
+                    {t.footer.navLinks[link.key]}
                   </a>
                 </li>
               ))}
@@ -125,7 +125,7 @@ export default function Footer() {
           </div>
 
           <div className="footer-col">
-            <p className="footer-heading">Terhubung</p>
+            <p className="footer-heading">{t.footer.connected}</p>
             <div className="footer-socials">
               {SOCIAL_LINKS.map((item) => (
                 <a
@@ -142,7 +142,7 @@ export default function Footer() {
             </div>
             <div className="footer-admin-wrap">
               <Link href="/admin/login" className="footer-admin-link">
-                Admin Portal →
+                {t.footer.adminPortal}
               </Link>
             </div>
           </div>
@@ -150,16 +150,16 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <p className="footer-copy">
-            &copy; {currentYear} JuniariDev. All rights reserved.
+            &copy; {currentYear} JuniariDev. {t.footer.allRights}
           </p>
 
           <button
             type="button"
             className="footer-back-to-top"
             onClick={scrollToTop}
-            aria-label="Kembali ke atas halaman"
+            aria-label={t.footer.backToTop}
           >
-            <span>Ke Atas</span>
+            <span>{t.footer.backToTop}</span>
             <FooterIcon name="arrowUp" />
           </button>
         </div>

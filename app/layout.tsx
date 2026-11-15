@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
+import { LanguageProvider } from '../lib/context/LanguageContext';
 
 const themeScript = `
 (function () {
@@ -10,6 +11,12 @@ const themeScript = `
     if (localStorage.getItem('theme') === 'light') theme = 'light';
   } catch (e) {}
   document.documentElement.dataset.theme = theme;
+  try {
+    var lang = localStorage.getItem('portfolio_lang');
+    if (lang === 'en' || lang === 'id') {
+      document.documentElement.lang = lang;
+    }
+  } catch (e) {}
 })();
 `;
 
@@ -62,10 +69,12 @@ export default function RootLayout({
         <Script id="theme" strategy="beforeInteractive">
           {themeScript}
         </Script>
-        <a className="skip-link" href="#main">
-          Lewati ke konten
-        </a>
-        {children}
+        <LanguageProvider>
+          <a className="skip-link" href="#main">
+            Lewati ke konten
+          </a>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

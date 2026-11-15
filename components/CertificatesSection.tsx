@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Certificate } from '../lib/types';
 import { getStorageUrl } from '../lib/supabaseClient';
+import { useLanguage } from '../lib/context/LanguageContext';
 
 interface CertificatesSectionProps {
   certificates: Certificate[];
@@ -18,6 +19,7 @@ interface ActiveModalData {
 }
 
 export default function CertificatesSection({ certificates }: CertificatesSectionProps) {
+  const { lang, t } = useLanguage();
   const [modalData, setModalData] = useState<ActiveModalData | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -82,9 +84,7 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
   return (
     <>
       <div className="portfolio-panel">
-        <p className="panel-sub">
-          Kredensial dan pencapaian resmi yang telah diraih. Klik kartu untuk melihat gambar sertifikat.
-        </p>
+        <p className="panel-sub">{t.portfolio.certificates.sub}</p>
 
           {certificates && certificates.length > 0 ? (
             <div className="cert-grid">
@@ -96,7 +96,9 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
                     : '/assets/images/cert-placeholder.png');
 
                 const isPdf = cert.image_file?.toLowerCase().endsWith('.pdf');
-                const actionLabel = isPdf ? 'Buka Dokumen' : 'Perbesar';
+                const actionLabel = isPdf
+                  ? t.portfolio.certificates.openDoc
+                  : t.portfolio.certificates.enlarge;
 
                 return (
                   <button
@@ -112,7 +114,7 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
                       {isPdf ? (
                         <span className="cert-pdf">
                           <strong>PDF</strong>
-                          <span>Dokumen PDF</span>
+                          <span>{lang === 'en' ? 'PDF Document' : 'Dokumen PDF'}</span>
                         </span>
                       ) : (
                         /* eslint-disable-next-line @next/next/no-img-element */
@@ -133,10 +135,8 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
             </div>
           ) : (
             <div className="empty-state" data-reveal>
-              <h3>Belum Ada Sertifikat Ditambahkan</h3>
-              <p>
-                Ruang galeri ini disediakan untuk sertifikat kompetensi dan penghargaan Juniari Nur Shofa. Sertifikat dapat diunggah melalui Dashboard Admin kapan saja.
-              </p>
+              <h3>{t.portfolio.certificates.emptyTitle}</h3>
+              <p>{t.portfolio.certificates.emptyDesc}</p>
             </div>
           )}
       </div>
@@ -153,7 +153,7 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
             <button
               type="button"
               className="modal-close"
-              aria-label="Tutup Pratinjau"
+              aria-label={t.portfolio.certificates.modalClose}
               onClick={closeModal}
             >
               ×
@@ -181,7 +181,7 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
                     rel="noopener noreferrer"
                     className="link-plain"
                   >
-                    Buka PDF
+                    {t.portfolio.certificates.modalViewCred}
                   </a>
                 )}
                 <a
@@ -191,7 +191,7 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
                   download
                   className="link-plain"
                 >
-                  Download File
+                  {t.portfolio.certificates.modalViewDoc}
                 </a>
               </div>
             </div>

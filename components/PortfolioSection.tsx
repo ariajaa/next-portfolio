@@ -4,20 +4,22 @@ import React, { useEffect, useState } from 'react';
 import { Project, Certificate } from '../lib/types';
 import ProjectsSection from './ProjectsSection';
 import CertificatesSection from './CertificatesSection';
+import { useLanguage } from '../lib/context/LanguageContext';
 
 interface PortfolioSectionProps {
   projects: Project[];
   certificates: Certificate[];
 }
 
-const TABS = [
-  { id: 'projects', label: 'Projects' },
-  { id: 'certificates', label: 'Certificates' },
+const TAB_KEYS = [
+  { id: 'projects', key: 'projects' as const },
+  { id: 'certificates', key: 'certificates' as const },
 ] as const;
 
-type TabId = (typeof TABS)[number]['id'];
+type TabId = (typeof TAB_KEYS)[number]['id'];
 
 export default function PortfolioSection({ projects, certificates }: PortfolioSectionProps) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabId>('projects');
 
   useEffect(() => {
@@ -37,23 +39,23 @@ export default function PortfolioSection({ projects, certificates }: PortfolioSe
   const onTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
-    const next = (index + (event.key === 'ArrowRight' ? 1 : -1) + TABS.length) % TABS.length;
-    selectTab(TABS[next].id);
-    document.getElementById(`tab-${TABS[next].id}`)?.focus();
+    const next = (index + (event.key === 'ArrowRight' ? 1 : -1) + TAB_KEYS.length) % TAB_KEYS.length;
+    selectTab(TAB_KEYS[next].id);
+    document.getElementById(`tab-${TAB_KEYS[next].id}`)?.focus();
   };
 
   return (
     <section className="section" id="portfolio">
       <div className="shell">
         <header className="section-head" data-reveal>
-          <p className="section-label">Portfolio Work</p>
+          <p className="section-label">{t.portfolio.sectionLabel}</p>
           <div className="section-head-main">
-            <h2>Karya, Proyek &amp; Sertifikasi</h2>
+            <h2>{t.portfolio.heading}</h2>
           </div>
         </header>
 
         <div className="portfolio-tabs" role="tablist" aria-label="Isi portfolio">
-          {TABS.map((tab, index) => (
+          {TAB_KEYS.map((tab, index) => (
             <button
               key={tab.id}
               type="button"
@@ -66,26 +68,28 @@ export default function PortfolioSection({ projects, certificates }: PortfolioSe
               onClick={() => selectTab(tab.id)}
               onKeyDown={(event) => onTabKeyDown(event, index)}
             >
-              {tab.label}
+              {t.portfolio.tabs[tab.key]}
             </button>
           ))}
         </div>
 
-        {TABS.map((tab) => (
-          <div
-            key={tab.id}
-            id={tab.id}
-            role="tabpanel"
-            aria-labelledby={`tab-${tab.id}`}
-            hidden={activeTab !== tab.id}
-          >
-            {tab.id === 'projects' ? (
-              <ProjectsSection projects={projects} />
-            ) : (
-              <CertificatesSection certificates={certificates} />
-            )}
-          </div>
-        ))}
+        <div
+          id="projects"
+          role="tabpanel"
+          aria-labelledby="tab-projects"
+          hidden={activeTab !== 'projects'}
+        >
+          <ProjectsSection projects={projects} />
+        </div>
+
+        <div
+          id="certificates"
+          role="tabpanel"
+          aria-labelledby="tab-certificates"
+          hidden={activeTab !== 'certificates'}
+        >
+          <CertificatesSection certificates={certificates} />
+        </div>
       </div>
     </section>
   );

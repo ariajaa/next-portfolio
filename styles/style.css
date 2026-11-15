@@ -272,6 +272,60 @@ textarea {
   gap: 0.4rem;
 }
 
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  height: 2.5rem;
+  padding: 0.18rem 0.35rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  gap: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.85rem;
+  height: 100%;
+  padding: 0.2rem 0.45rem;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: 1;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+
+.lang-btn:hover {
+  color: var(--ink);
+}
+
+.lang-btn.is-active {
+  background: var(--accent-ink);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.lang-divider {
+  color: var(--rule-strong);
+  font-size: 0.7rem;
+  user-select: none;
+  opacity: 0.7;
+}
+
 .theme-toggle {
   position: relative;
   display: inline-flex;
@@ -2138,6 +2192,14 @@ button.link-plain {
   .theme-toggle {
     width: 2.75rem;
     height: 2.75rem;
+  }
+
+  .lang-switcher {
+    height: 2.75rem;
+  }
+
+  .lang-btn {
+    min-width: 2.2rem;
   }
 
   .menu-toggle,

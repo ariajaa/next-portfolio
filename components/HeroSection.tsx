@@ -1,12 +1,18 @@
+'use client';
+
 import React from 'react';
 import { Profile } from '../lib/types';
 import { getStorageUrl } from '../lib/supabaseClient';
+import { useLanguage } from '../lib/context/LanguageContext';
+import { EN_PROFILE_FALLBACK } from '../lib/i18n';
 
 interface HeroSectionProps {
   profile: Profile;
 }
 
 export default function HeroSection({ profile }: HeroSectionProps) {
+  const { lang, t } = useLanguage();
+
   const photoUrl =
     getStorageUrl('profile', profile.photo_file) ||
     '/assets/uploads/profile/WhatsApp Image 2026-11-04 at 01.19.34.jpeg';
@@ -15,19 +21,24 @@ export default function HeroSection({ profile }: HeroSectionProps) {
     getStorageUrl('files', profile.cv_file) ||
     '/assets/files/CV ARI.pdf';
 
+  const roleTitle = lang === 'en' ? EN_PROFILE_FALLBACK.role_title : profile.role_title;
+  const heroSubtitle = lang === 'en' ? EN_PROFILE_FALLBACK.hero_subtitle : profile.hero_subtitle;
+
   return (
     <section className="hero" id="home">
       <div className="shell hero-grid">
         <div className="hero-copy">
-          <p className="hero-kicker">Halo, Selamat Datang</p>
+          <p className="hero-kicker">{t.hero.kicker}</p>
 
           <h1 className="hero-title">
-            Saya <span className="hero-name">{profile.full_name}</span>
+            {t.hero.greeting} <span className="hero-name">{profile.full_name}</span>
           </h1>
 
-          <p className="hero-role">{profile.role_title} · Universitas PGRI Semarang</p>
+          <p className="hero-role">
+            {roleTitle} · {t.hero.roleAffiliation}
+          </p>
 
-          <p className="hero-desc">{profile.hero_subtitle}</p>
+          <p className="hero-desc">{heroSubtitle}</p>
 
           <div className="hero-actions">
             <a
@@ -37,7 +48,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Download CV
+              {t.hero.downloadCv}
             </a>
 
             <a
@@ -65,18 +76,18 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={photoUrl}
-              alt={`Foto ${profile.full_name}`}
+              alt={`${t.hero.photoAlt} ${profile.full_name}`}
               width={900}
               height={1200}
               fetchPriority="high"
             />
           ) : (
-            <div className="project-plate-empty">Foto belum tersedia</div>
+            <div className="project-plate-empty">{t.hero.noPhoto}</div>
           )}
 
           <figcaption className="hero-caption">
-            <span>Program Studi</span>
-            <strong>S1 Informatika</strong>
+            <span>{t.hero.captionLabel}</span>
+            <strong>{t.hero.captionValue}</strong>
           </figcaption>
         </figure>
       </div>

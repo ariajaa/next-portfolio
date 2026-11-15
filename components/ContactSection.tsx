@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Comment, Profile } from '../lib/types';
+import { useLanguage } from '../lib/context/LanguageContext';
 
 interface ContactSectionProps {
   profile: Profile;
@@ -98,6 +99,7 @@ function formatWhatsapp(value: string) {
 }
 
 export default function ContactSection({ profile, comments }: ContactSectionProps) {
+  const { lang, t } = useLanguage();
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -148,18 +150,18 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
 
       if (res.ok) {
         setStatus('success');
-        setStatusMessage('Pesan Anda berhasil dikirim langsung ke email saya. Terima kasih!');
+        setStatusMessage(t.contact.form.success);
         setFormData({ name: '', email: '', message: '' });
       } else {
         const errorMsg =
           result?.errors?.map((err: { message: string }) => err.message).join(', ') ||
-          'Gagal mengirim pesan melalui Formspree. Silakan hubungi langsung via WhatsApp atau email.';
+          t.contact.form.error;
         setStatus('error');
         setStatusMessage(errorMsg);
       }
     } catch {
       setStatus('error');
-      setStatusMessage('Terjadi gangguan koneksi saat mengirim pesan. Silakan coba lagi.');
+      setStatusMessage(t.contact.form.error);
     } finally {
       setLoading(false);
     }
@@ -174,20 +176,20 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
     <section className="section" id="contact">
       <div className="shell">
         <header className="section-head">
-          <p className="section-label">Get In Touch</p>
+          <p className="section-label">{t.contact.sectionLabel}</p>
           <div className="section-head-main">
-            <h2>Hubungi Saya</h2>
-            <p className="section-sub">
-              Tertarik untuk berkolaborasi, diskusi proyek, atau memiliki pertanyaan? Jangan ragu mengirim pesan.
-            </p>
+            <h2>{t.contact.heading}</h2>
+            <p className="section-sub">{t.contact.sub}</p>
           </div>
         </header>
 
         <div className="contact-grid">
           <div className="contact-intro">
-            <h3>Kirim Pesan Langsung</h3>
+            <h3>{lang === 'en' ? 'Send a Direct Message' : 'Kirim Pesan Langsung'}</h3>
             <p>
-              Ada tawaran proyek, pertanyaan, atau ingin mendiskusikan peluang kerja sama? Silakan kirim pesan Anda melalui formulir berikut.
+              {lang === 'en'
+                ? 'Have a project offer, inquiry, or want to discuss collaboration? Feel free to send your message below.'
+                : 'Ada tawaran proyek, pertanyaan, atau ingin mendiskusikan peluang kerja sama? Silakan kirim pesan Anda melalui formulir berikut.'}
             </p>
 
             <div className="alert-slot" role="status" aria-live="polite">
@@ -197,11 +199,19 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
                     {status === 'success' ? '✓' : '!'}
                   </span>
                   <div className="alert-body">
-                    <strong>{status === 'success' ? 'Pesan Terkirim!' : 'Terjadi Kesalahan'}</strong>
+                    <strong>
+                      {status === 'success'
+                        ? lang === 'en'
+                          ? 'Message Sent!'
+                          : 'Pesan Terkirim!'
+                        : lang === 'en'
+                        ? 'An Error Occurred'
+                        : 'Terjadi Kesalahan'}
+                    </strong>
                     <p>{statusMessage}</p>
                     <div className="alert-actions">
                       <button type="button" className="link-plain" onClick={dismissStatus}>
-                        Tutup
+                        {lang === 'en' ? 'Close' : 'Tutup'}
                       </button>
                       {status === 'error' && (
                         <>
@@ -214,7 +224,7 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
                             rel="noopener noreferrer"
                             className="link-plain"
                           >
-                            WhatsApp Langsung
+                            WhatsApp
                           </a>
                         </>
                       )}
@@ -225,7 +235,7 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
                           rel="noopener noreferrer"
                           className="link-plain"
                         >
-                          Lanjut via WhatsApp
+                          {lang === 'en' ? 'Continue via WhatsApp' : 'Lanjut via WhatsApp'}
                         </a>
                       )}
                     </div>
@@ -242,12 +252,12 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
               onSubmit={handleSubmit}
             >
               <div className="field">
-                <label htmlFor="name">Nama Lengkap</label>
+                <label htmlFor="name">{t.contact.form.nameLabel}</label>
                 <input
                   type="text"
                   id="name"
                   name="name"
-                  placeholder="Masukkan nama lengkap Anda"
+                  placeholder={t.contact.form.namePlaceholder}
                   required
                   maxLength={100}
                   value={formData.name}
@@ -257,12 +267,12 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
               </div>
 
               <div className="field">
-                <label htmlFor="email">Alamat Email</label>
+                <label htmlFor="email">{t.contact.form.emailLabel}</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  placeholder="nama@email.com"
+                  placeholder={t.contact.form.emailPlaceholder}
                   required
                   maxLength={100}
                   value={formData.email}
@@ -272,11 +282,11 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
               </div>
 
               <div className="field">
-                <label htmlFor="message">Pesan</label>
+                <label htmlFor="message">{t.contact.form.messageLabel}</label>
                 <textarea
                   id="message"
                   name="message"
-                  placeholder="Tuliskan pesan Anda di sini..."
+                  placeholder={t.contact.form.messagePlaceholder}
                   required
                   maxLength={3000}
                   rows={4}
@@ -288,19 +298,23 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
 
               <button type="submit" className="btn-solid" disabled={loading}>
                 {loading && <span className="btn-spinner" aria-hidden="true" />}
-                {loading ? 'Mengirim...' : 'Kirim Pesan'}
+                {loading ? t.contact.form.submitting : t.contact.form.submit}
               </button>
               <p className="form-status" aria-live="off">
-                Pesan terkirim langsung ke email via Formspree tanpa perantara.
+                {lang === 'en'
+                  ? 'Message sent directly to email via Formspree.'
+                  : 'Pesan terkirim langsung ke email via Formspree tanpa perantara.'}
               </p>
             </form>
           </div>
 
           <div className="contact-details">
             <div className="contact-details-head">
-              <h3>Saluran Langsung</h3>
+              <h3>{lang === 'en' ? 'Direct Channels' : 'Saluran Langsung'}</h3>
               <p>
-                Lebih suka komunikasi instan? Hubungi saya secara langsung melalui WhatsApp, Email, atau profil jejaring di bawah ini.
+                {lang === 'en'
+                  ? 'Prefer instant communication? Reach out directly via WhatsApp, Email, or the channels below.'
+                  : 'Lebih suka komunikasi instan? Hubungi saya secara langsung melalui WhatsApp, Email, atau profil jejaring di bawah ini.'}
               </p>
             </div>
 
@@ -329,17 +343,19 @@ export default function ContactSection({ profile, comments }: ContactSectionProp
               </ul>
               <p className="social-place">
                 <Icon name="pin" />
-                {profile.domicile}
+                {lang === 'en' ? 'Semarang, Central Java, Indonesia' : profile.domicile}
               </p>
             </div>
 
             {commentList.length > 0 && (
               <div className="comments" aria-labelledby="comments-heading" style={{ marginTop: '1.5rem', padding: '1rem', border: '1px solid var(--rule)' }}>
                 <div className="comments-head">
-                  <h3 id="comments-heading" style={{ fontSize: '1rem' }}>Komentar Pengunjung</h3>
+                  <h3 id="comments-heading" style={{ fontSize: '1rem' }}>
+                    {lang === 'en' ? 'Visitor Comments' : 'Komentar Pengunjung'}
+                  </h3>
                   <span className="comment-count">{commentList.length}</span>
                 </div>
-                <div className="comment-list" tabIndex={0} aria-label="Daftar komentar">
+                <div className="comment-list" tabIndex={0} aria-label={lang === 'en' ? 'Comment list' : 'Daftar komentar'}>
                   {commentList.map((comment) => (
                     <article key={comment.id} className="comment">
                       {comment.photo_url ? (

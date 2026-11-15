@@ -1,17 +1,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../lib/context/LanguageContext';
 
-const SECTIONS = [
-  { id: 'home', label: 'HOME' },
-  { id: 'about', label: 'ABOUT' },
-  { id: 'skills', label: 'SKILLS' },
-  { id: 'portfolio', label: 'PORTFOLIO' },
-  { id: 'experience', label: 'EXPERIENCE' },
-  { id: 'contact', label: 'CONTACT' },
+const SECTION_KEYS = [
+  { id: 'home', key: 'home' as const },
+  { id: 'about', key: 'about' as const },
+  { id: 'skills', key: 'skills' as const },
+  { id: 'portfolio', key: 'portfolio' as const },
+  { id: 'experience', key: 'experience' as const },
+  { id: 'contact', key: 'contact' as const },
 ];
 
 export default function Navbar() {
+  const { lang, setLang, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -37,7 +39,7 @@ export default function Navbar() {
 
     const updateActive = () => {
       const scrollPos = window.scrollY + 140;
-      for (const { id } of SECTIONS) {
+      for (const { id } of SECTION_KEYS) {
         const el = document.getElementById(id);
         if (!el) continue;
         const top = el.offsetTop;
@@ -82,14 +84,14 @@ export default function Navbar() {
 
         <nav className="primary-nav" aria-label="Navigasi utama">
           <ul>
-            {SECTIONS.map((section) => (
+            {SECTION_KEYS.map((section) => (
               <li key={section.id}>
                 <a
                   href={`#${section.id}`}
                   aria-current={activeSection === section.id ? 'true' : undefined}
                   onClick={closeMobileMenu}
                 >
-                  {section.label}
+                  {t.nav[section.key]}
                 </a>
               </li>
             ))}
@@ -97,10 +99,34 @@ export default function Navbar() {
         </nav>
 
         <div className="header-tools">
+          <div className="lang-switcher" role="group" aria-label={t.nav.langAria}>
+            <button
+              type="button"
+              className={`lang-btn ${lang === 'id' ? 'is-active' : ''}`}
+              onClick={() => setLang('id')}
+              aria-pressed={lang === 'id'}
+              title="Bahasa Indonesia"
+            >
+              ID
+            </button>
+            <span className="lang-divider" aria-hidden="true">
+              /
+            </span>
+            <button
+              type="button"
+              className={`lang-btn ${lang === 'en' ? 'is-active' : ''}`}
+              onClick={() => setLang('en')}
+              aria-pressed={lang === 'en'}
+              title="English"
+            >
+              EN
+            </button>
+          </div>
+
           <button
             type="button"
             className="theme-toggle"
-            aria-label={theme === 'dark' ? 'Ganti ke mode cerah' : 'Ganti ke mode malam'}
+            aria-label={theme === 'dark' ? t.nav.themeLight : t.nav.themeDark}
             onClick={toggleTheme}
           >
             <svg className="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -113,7 +139,7 @@ export default function Navbar() {
           </button>
 
           <a href="#contact" className="header-action">
-            Hubungi
+            {t.nav.contactAction}
           </a>
 
           <button
@@ -128,7 +154,7 @@ export default function Navbar() {
               <span></span>
               <span></span>
             </span>
-            Menu
+            {t.nav.menu}
           </button>
         </div>
       </div>
@@ -141,14 +167,14 @@ export default function Navbar() {
         hidden={!mobileMenuOpen}
       >
         <ul>
-          {SECTIONS.map((section) => (
+          {SECTION_KEYS.map((section) => (
             <li key={section.id}>
               <a
                 href={`#${section.id}`}
                 aria-current={activeSection === section.id ? 'true' : undefined}
                 onClick={closeMobileMenu}
               >
-                {section.label}
+                {t.nav[section.key]}
               </a>
             </li>
           ))}
