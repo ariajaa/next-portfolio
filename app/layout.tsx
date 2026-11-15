@@ -3,48 +3,6 @@ import { Archivo } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
-// Menyalakan reveal hanya jika browser siap dan pengguna tidak minta gerak dikurangi.
-// Konten tetap terlihat pada default (tanpa JS, reduced motion, atau skrip gagal).
-const revealScript = `
-(function () {
-  var root = document.documentElement;
-  if (!('IntersectionObserver' in window) || !('MutationObserver' in window)) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  var seen = new WeakSet();
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-inview');
-      io.unobserve(entry.target);
-    });
-  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-
-  function watch(el) {
-    if (seen.has(el) || el.classList.contains('is-inview')) return;
-    seen.add(el);
-    io.observe(el);
-  }
-
-  function scan() {
-    document.querySelectorAll('[data-reveal]').forEach(watch);
-  }
-
-  function start() {
-    scan();
-    new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
-  }
-
-  root.classList.add('reveal-on');
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start);
-  } else {
-    start();
-  }
-})();
-`;
-
 const themeScript = `
 (function () {
   var theme = 'dark';
@@ -89,9 +47,6 @@ export default function RootLayout({
       <body>
         <Script id="theme" strategy="beforeInteractive">
           {themeScript}
-        </Script>
-        <Script id="reveal" strategy="beforeInteractive">
-          {revealScript}
         </Script>
         <a className="skip-link" href="#main">
           Lewati ke konten

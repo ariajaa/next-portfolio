@@ -22,32 +22,15 @@ export default function Navbar() {
     setTheme(current);
   }, []);
 
-  const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
-    const root = document.documentElement;
-
-    const apply = () => {
-      root.dataset.theme = next;
-      try {
-        localStorage.setItem('theme', next);
-      } catch {
-        /* localStorage bisa diblokir; tema tetap berlaku untuk sesi ini. */
-      }
-      setTheme(next);
-    };
-
-    const doc = document as Document & { startViewTransition?: (cb: () => void) => void };
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!doc.startViewTransition || reduceMotion) {
-      apply();
-      return;
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* localStorage bisa diblokir; tema tetap berlaku untuk sesi ini. */
     }
-
-    const rect = event.currentTarget.getBoundingClientRect();
-    root.style.setProperty('--theme-x', `${rect.left + rect.width / 2}px`);
-    root.style.setProperty('--theme-y', `${rect.top + rect.height / 2}px`);
-    doc.startViewTransition(apply);
+    setTheme(next);
   };
 
   useEffect(() => {
