@@ -320,6 +320,14 @@ export const EN_EXPERIENCES_FALLBACK: Record<
   number,
   { role: string; organization: string; type: string; description: string; period: string }
 > = {
+  5: {
+    role: 'Head of Creative Media Training',
+    organization: 'BEM Faculty of Engineering and Informatics',
+    period: '2026',
+    type: 'Committee',
+    description:
+      'Led and coordinated the creative media training workshop, managing event concept, curriculum development (visual design, branding, and digital content production), cross-division committee direction, and post-event evaluation.',
+  },
   1: {
     role: 'Information & Communication Staff',
     organization: 'BEM Faculty of Engineering and Informatics',

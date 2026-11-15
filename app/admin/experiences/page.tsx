@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { Experience } from '@/lib/types';
 import { fallbackExperiences } from '@/lib/queries/experiences';
 
-const EXP_TYPES = ['Organisasi', 'Pekerjaan', 'Pendidikan'];
+const EXP_TYPES = ['Organisasi', 'Kepanitiaan', 'Pekerjaan', 'Pendidikan'];
 
 function AdminExperiencesContent() {
   const searchParams = useSearchParams();
