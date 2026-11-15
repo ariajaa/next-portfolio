@@ -44,19 +44,12 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
   }, [projects, activeCategory, searchQuery]);
 
   return (
-    <section className="section" id="projects">
-      <div className="shell">
-        <header className="section-head" data-reveal>
-          <p className="section-label">Portfolio Work</p>
-          <div className="section-head-main">
-            <h2>Karya &amp; Proyek Terpilih</h2>
-            <p className="section-sub">
-              Daftar proyek dan karya yang telah diselesaikan. Dikelola dinamis melalui dashboard admin.
-            </p>
-          </div>
-        </header>
+    <div className="portfolio-panel">
+      <p className="panel-sub">
+        Daftar proyek dan karya yang telah diselesaikan. Dikelola dinamis melalui dashboard admin.
+      </p>
 
-        <div className="projects-controls">
+      <div className="projects-controls">
           <div className="filter-bar" role="group" aria-label="Filter kategori proyek">
             {categories.map((category) => (
               <button
@@ -147,7 +140,6 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
             </p>
           </div>
         )}
-      </div>
-    </section>
+    </div>
   );
 }

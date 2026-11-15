@@ -81,17 +81,10 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
 
   return (
     <>
-      <section className="section" id="certificates">
-        <div className="shell">
-          <header className="section-head" data-reveal>
-            <p className="section-label">Credentials</p>
-            <div className="section-head-main">
-              <h2>Sertifikasi &amp; Penghargaan</h2>
-              <p className="section-sub">
-                Kredensial dan pencapaian resmi yang telah diraih. Klik kartu untuk melihat gambar sertifikat.
-              </p>
-            </div>
-          </header>
+      <div className="portfolio-panel">
+        <p className="panel-sub">
+          Kredensial dan pencapaian resmi yang telah diraih. Klik kartu untuk melihat gambar sertifikat.
+        </p>
 
           {certificates && certificates.length > 0 ? (
             <div className="cert-grid">
@@ -146,8 +139,7 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
               </p>
             </div>
           )}
-        </div>
-      </section>
+      </div>
 
       {modalData && (
         <div

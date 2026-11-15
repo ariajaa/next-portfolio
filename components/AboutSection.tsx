@@ -63,6 +63,35 @@ export default function AboutSection({ profile }: AboutSectionProps) {
             </div>
           </dl>
         </div>
+
+        <div className="music-card">
+          <div className="music-copy">
+            <h3>Musik yang menemani saya ngoding</h3>
+            <p>
+              Playlist NgodingTime berisi lagu yang saya putar saat menulis kode, mengerjakan tugas,
+              dan merancang antarmuka.
+            </p>
+            <a
+              className="link-plain"
+              href="https://open.spotify.com/playlist/3XXwLc91K6JYhtotQO98S4"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Buka playlist NgodingTime
+            </a>
+          </div>
+
+          <div className="music-embed">
+            <iframe
+              title="Playlist Spotify NgodingTime"
+              src="https://open.spotify.com/embed/playlist/3XXwLc91K6JYhtotQO98S4?utm_source=generator&theme=0"
+              width="100%"
+              height="352"
+              loading="lazy"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

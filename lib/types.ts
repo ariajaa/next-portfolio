@@ -60,6 +60,14 @@ export interface Certificate {
   created_at?: string;
 }
 
+export interface Comment {
+  id: number;
+  name: string;
+  message: string;
+  photo_url: string | null;
+  created_at: string;
+}
+
 export interface Message {
   id: number;
   name: string;

@@ -8,10 +8,13 @@ const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const safeUrl = supabaseUrl || 'https://placeholder.supabase.co';
 const safeAnonKey = supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDUxOTI4MDAsImV4cCI6MTk2MDc2ODgwMH0.placeholder';
 
+export function isSupabaseConfigured() {
+  return Boolean(supabaseUrl) && supabaseUrl !== 'https://placeholder.supabase.co';
+}
+
 /**
  * Server-side client using anon key (respects RLS)
- */
-export function createServerClient() {
+ */export function createServerClient() {
   return createClient(safeUrl, safeAnonKey, {
     auth: {
       persistSession: false,
