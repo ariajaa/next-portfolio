@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Archivo } from 'next/font/google';
+import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
@@ -13,10 +13,24 @@ const themeScript = `
 })();
 `;
 
-const archivo = Archivo({
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-archivo',
+  variable: '--font-inter',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['500', '600', '700'],
+  variable: '--font-space',
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500'],
+  variable: '--font-jet',
 });
 
 export const metadata: Metadata = {
@@ -34,7 +48,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#101210',
+  themeColor: '#050510',
 };
 
 export default function RootLayout({
@@ -43,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={archivo.variable}>
+    <html lang="id" className={`${inter.variable} ${spaceGrotesk.variable} ${jetBrainsMono.variable}`}>
       <body>
         <Script id="theme" strategy="beforeInteractive">
           {themeScript}
