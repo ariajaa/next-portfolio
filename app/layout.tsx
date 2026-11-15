@@ -45,6 +45,16 @@ const revealScript = `
 })();
 `;
 
+const themeScript = `
+(function () {
+  var theme = 'dark';
+  try {
+    if (localStorage.getItem('theme') === 'light') theme = 'light';
+  } catch (e) {}
+  document.documentElement.dataset.theme = theme;
+})();
+`;
+
 const archivo = Archivo({
   subsets: ['latin'],
   display: 'swap',
@@ -77,6 +87,9 @@ export default function RootLayout({
   return (
     <html lang="id" className={archivo.variable}>
       <body>
+        <Script id="theme" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
         <Script id="reveal" strategy="beforeInteractive">
           {revealScript}
         </Script>

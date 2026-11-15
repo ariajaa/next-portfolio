@@ -107,29 +107,36 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   <div className="alert-body">
                     <strong>{status === 'success' ? 'Terima kasih!' : 'Terjadi Kesalahan'}</strong>
                     <p>{statusMessage}</p>
-                  </div>
-                  <div className="alert-actions">
-                    <button type="button" className="link-plain" onClick={dismissStatus}>
-                      Tutup
-                    </button>
-                    {status === 'error' && (
-                      <a
-                        href={`mailto:${profile.email}`}
-                        className="link-plain"
-                      >
-                        Email Langsung
-                      </a>
-                    )}
-                    {status === 'success' && (
-                      <a
-                        href={`https://wa.me/${cleanWhatsapp}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link-plain"
-                      >
-                        Lanjut ke WhatsApp
-                      </a>
-                    )}
+                    <div className="alert-actions">
+                      <button type="button" className="link-plain" onClick={dismissStatus}>
+                        Tutup
+                      </button>
+                      {status === 'error' && (
+                        <>
+                          <a href={`mailto:${profile.email}`} className="link-plain">
+                            Email Langsung
+                          </a>
+                          <a
+                            href={`https://wa.me/${cleanWhatsapp}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="link-plain"
+                          >
+                            WhatsApp
+                          </a>
+                        </>
+                      )}
+                      {status === 'success' && (
+                        <a
+                          href={`https://wa.me/${cleanWhatsapp}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link-plain"
+                        >
+                          Lanjut ke WhatsApp
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

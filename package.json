@@ -7,14 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migration:dry-run": "node scripts/dry-run-migration.mjs",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview"
-  },
-  "allowScripts": {
-    "@opennextjs/cloudflare": true,
-    "opennextjs-cloudflare": true,
-    "wrangler": true
+    "migration:dry-run": "node scripts/dry-run-migration.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",

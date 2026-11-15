@@ -18,20 +18,36 @@ export default function Navbar() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
-    const stored = localStorage.getItem('theme') as 'dark' | 'light' | null;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initial = stored ?? (prefersDark ? 'dark' : 'light');
-    setTheme(initial);
-    document.documentElement.dataset.theme = initial;
+    const current = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+    setTheme(current);
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = (event: React.MouseEvent<HTMLButtonElement>) => {
     const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    localStorage.setItem('theme', next);
-    document.documentElement.dataset.theme = next;
-    document.documentElement.style.setProperty('--theme-x', 'calc(100% - 3.5rem)');
-    document.documentElement.style.setProperty('--theme-y', '0');
+    const root = document.documentElement;
+
+    const apply = () => {
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        /* localStorage bisa diblokir; tema tetap berlaku untuk sesi ini. */
+      }
+      setTheme(next);
+    };
+
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => void };
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!doc.startViewTransition || reduceMotion) {
+      apply();
+      return;
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    root.style.setProperty('--theme-x', `${rect.left + rect.width / 2}px`);
+    root.style.setProperty('--theme-y', `${rect.top + rect.height / 2}px`);
+    doc.startViewTransition(apply);
   };
 
   useEffect(() => {

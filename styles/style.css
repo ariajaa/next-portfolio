@@ -427,6 +427,14 @@ textarea {
   transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 
+button.link-plain {
+  padding: 0 0 0.2rem;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+}
+
 .link-plain:hover {
   color: var(--accent);
   border-bottom-color: var(--accent);

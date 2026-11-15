@@ -29,6 +29,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# deploy attempts (netlify / cloudflare)
+.netlify
+deploy-temp
+.wrangler
+
+# lockfile: generated on Windows, npm install on Vercel regenerates it
+package-lock.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
