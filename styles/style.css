@@ -88,6 +88,10 @@ a {
   text-underline-offset: 0.22em;
 }
 
+label[for] {
+  cursor: pointer;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -141,7 +145,6 @@ textarea {
 
 ::placeholder {
   color: var(--ink-muted);
-  opacity: 0.85;
 }
 
 :root {
@@ -329,7 +332,7 @@ textarea {
 }
 
 .header-action:hover {
-  filter: brightness(1.12);
+  filter: brightness(0.94);
 }
 
 .menu-toggle {
@@ -437,7 +440,7 @@ textarea {
 }
 
 .hero-name {
-  background: var(--accent-grad);
+  background: var(--accent-grad-text);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -482,7 +485,7 @@ textarea {
 }
 
 .btn-solid:hover {
-  filter: brightness(1.1);
+  filter: brightness(0.94);
 }
 
 .btn-solid:disabled {
@@ -777,12 +780,6 @@ button.link-plain {
   border: 1px solid var(--rule);
   border-radius: var(--r-md);
   font-size: 0.9rem;
-}
-
-.projects-search input:focus-visible {
-  outline: none;
-  border-color: var(--accent-ink);
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
 }
 
 .search-clear {
@@ -1242,11 +1239,9 @@ button.link-plain {
   transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 
-.field input:focus-visible,
-.field textarea:focus-visible {
-  outline: none;
+.field input:focus,
+.field textarea:focus {
   border-color: var(--accent-ink);
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
 }
 
 .field textarea {

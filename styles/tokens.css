@@ -19,7 +19,10 @@
   --accent: #2c67ed;
   --accent-ink: #60a5fa;
   --accent-soft: #0c1a33;
-  --accent-grad: linear-gradient(120deg, #2c67ed 0%, #60a5fa 100%);
+  /* Permukaan berteks putih harus tetap >=4.5:1, jadi gradien tombol lebih gelap
+     daripada gradien teks judul hero yang berukuran besar. */
+  --accent-grad: linear-gradient(120deg, #1d4ed8 0%, #2c67ed 100%);
+  --accent-grad-text: linear-gradient(120deg, #2c67ed 0%, #60a5fa 100%);
 
   --success: #34d399;
   --success-soft: #07271f;
@@ -81,6 +84,7 @@
   --accent-ink: #1d4ed8;
   --accent-soft: #e2eafc;
   --accent-grad: linear-gradient(120deg, #1d4ed8 0%, #2563eb 100%);
+  --accent-grad-text: linear-gradient(120deg, #1d4ed8 0%, #2563eb 100%);
 
   --success: #0f7a52;
   --success-soft: #dcf0e6;
