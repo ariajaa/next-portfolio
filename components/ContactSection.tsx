@@ -6,7 +6,7 @@ import { Comment, Profile } from '../lib/types';
 interface ContactSectionProps {
   profile: Profile;
   comments: Comment[];
-  commentsEnabled: boolean;
+  commentsEnabled?: boolean;
 }
 
 type IconName = 'instagram' | 'github' | 'whatsapp' | 'mail' | 'pin' | 'arrow';
@@ -97,21 +97,14 @@ function formatWhatsapp(value: string) {
   return `+${digits.startsWith('62') ? '62 ' : ''}${grouped}`;
 }
 
-export default function ContactSection({ profile, comments, commentsEnabled }: ContactSectionProps) {
+export default function ContactSection({ profile, comments }: ContactSectionProps) {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [statusMessage, setStatusMessage] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [commentList, setCommentList] = useState<Comment[]>(comments);
-  const [commentForm, setCommentForm] = useState({ name: '', message: '' });
-  const [honeypot, setHoneypot] = useState('');
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [commentSending, setCommentSending] = useState(false);
-  const [commentStatus, setCommentStatus] = useState('');
-  const [commentFailed, setCommentFailed] = useState(false);
+  const [commentList] = useState<Comment[]>(comments);
 
   const cleanWhatsapp = profile.whatsapp.replace(/[^0-9]/g, '');
 
@@ -132,6 +125,9 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
     { label: 'Email', handle: profile.email, href: `mailto:${profile.email}`, icon: 'mail' as const },
   ];
 
+  const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID || 'xzererzl';
+  const formspreeEndpoint = `https://formspree.io/f/${formspreeId}`;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -139,24 +135,31 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
     setStatusMessage('');
 
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch(formspreeEndpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(formData),
       });
 
-      const result = await res.json();
-      if (res.ok && result.success) {
+      const result = await res.json().catch(() => null);
+
+      if (res.ok) {
         setStatus('success');
-        setStatusMessage(result.message || 'Pesan Anda berhasil dikirim! Terima kasih telah menghubungi.');
+        setStatusMessage('Pesan Anda berhasil dikirim langsung ke email saya. Terima kasih!');
         setFormData({ name: '', email: '', message: '' });
       } else {
+        const errorMsg =
+          result?.errors?.map((err: { message: string }) => err.message).join(', ') ||
+          'Gagal mengirim pesan melalui Formspree. Silakan hubungi langsung via WhatsApp atau email.';
         setStatus('error');
-        setStatusMessage(result.message || 'Gagal mengirim pesan. Silakan coba beberapa saat lagi.');
+        setStatusMessage(errorMsg);
       }
     } catch {
       setStatus('error');
-      setStatusMessage('Terjadi gangguan koneksi jaringan. Coba lagi nanti.');
+      setStatusMessage('Terjadi gangguan koneksi saat mengirim pesan. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -165,63 +168,6 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
   const dismissStatus = () => {
     setStatus('idle');
     setStatusMessage('');
-  };
-
-  const clearPhoto = () => {
-    if (photoPreview) URL.revokeObjectURL(photoPreview);
-    setPhoto(null);
-    setPhotoPreview(null);
-  };
-
-  const onPhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] ?? null;
-    setCommentFailed(false);
-    setCommentStatus('');
-
-    if (file && file.size > 5 * 1024 * 1024) {
-      event.target.value = '';
-      clearPhoto();
-      setCommentFailed(true);
-      setCommentStatus('Ukuran foto maksimal 5 MB.');
-      return;
-    }
-
-    if (photoPreview) URL.revokeObjectURL(photoPreview);
-    setPhoto(file);
-    setPhotoPreview(file ? URL.createObjectURL(file) : null);
-  };
-
-  const handleCommentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setCommentSending(true);
-    setCommentStatus('');
-    setCommentFailed(false);
-
-    try {
-      const body = new FormData();
-      body.append('name', commentForm.name);
-      body.append('message', commentForm.message);
-      body.append('website', honeypot);
-      if (photo) body.append('photo', photo);
-
-      const res = await fetch('/api/comments', { method: 'POST', body });
-      const result = await res.json();
-
-      if (res.ok && result.success && result.comment) {
-        setCommentList((current) => [result.comment as Comment, ...current]);
-        setCommentForm({ name: '', message: '' });
-        clearPhoto();
-        setCommentStatus('Komentar terkirim. Terima kasih sudah mampir.');
-      } else {
-        setCommentFailed(true);
-        setCommentStatus(result.message || 'Komentar gagal dikirim. Coba lagi nanti.');
-      }
-    } catch {
-      setCommentFailed(true);
-      setCommentStatus('Terjadi gangguan koneksi jaringan. Coba lagi nanti.');
-    } finally {
-      setCommentSending(false);
-    }
   };
 
   return (
@@ -239,10 +185,9 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
 
         <div className="contact-grid">
           <div className="contact-intro">
-            <h3>Mari Terhubung!</h3>
+            <h3>Kirim Pesan Langsung</h3>
             <p>
-              Saya terbuka untuk kesempatan kerja sama, proyek kolaboratif, maupun diskusi seputar teknologi dan
-              desain.
+              Ada tawaran proyek, pertanyaan, atau ingin mendiskusikan peluang kerja sama? Silakan kirim pesan Anda melalui formulir berikut.
             </p>
 
             <div className="alert-slot" role="status" aria-live="polite">
@@ -252,7 +197,7 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
                     {status === 'success' ? '✓' : '!'}
                   </span>
                   <div className="alert-body">
-                    <strong>{status === 'success' ? 'Terima kasih!' : 'Terjadi Kesalahan'}</strong>
+                    <strong>{status === 'success' ? 'Pesan Terkirim!' : 'Terjadi Kesalahan'}</strong>
                     <p>{statusMessage}</p>
                     <div className="alert-actions">
                       <button type="button" className="link-plain" onClick={dismissStatus}>
@@ -261,7 +206,7 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
                       {status === 'error' && (
                         <>
                           <a href={`mailto:${profile.email}`} className="link-plain">
-                            Email Langsung
+                            Email Manual
                           </a>
                           <a
                             href={`https://wa.me/${cleanWhatsapp}`}
@@ -269,7 +214,7 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
                             rel="noopener noreferrer"
                             className="link-plain"
                           >
-                            WhatsApp
+                            WhatsApp Langsung
                           </a>
                         </>
                       )}
@@ -280,7 +225,7 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
                           rel="noopener noreferrer"
                           className="link-plain"
                         >
-                          Lanjut ke WhatsApp
+                          Lanjut via WhatsApp
                         </a>
                       )}
                     </div>
@@ -289,7 +234,13 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
               )}
             </div>
 
-            <form ref={formRef} className="contact-form" onSubmit={handleSubmit}>
+            <form
+              ref={formRef}
+              className="contact-form"
+              action={formspreeEndpoint}
+              method="POST"
+              onSubmit={handleSubmit}
+            >
               <div className="field">
                 <label htmlFor="name">Nama Lengkap</label>
                 <input
@@ -340,13 +291,21 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
                 {loading ? 'Mengirim...' : 'Kirim Pesan'}
               </button>
               <p className="form-status" aria-live="off">
-                Data yang dikirim akan disimpan ke database. Jika layanan belum aktif, tombol akan menawarkan opsi
-                email/WhatsApp.
+                Pesan terkirim langsung ke email via Formspree tanpa perantara.
               </p>
             </form>
+          </div>
+
+          <div className="contact-details">
+            <div className="contact-details-head">
+              <h3>Saluran Langsung</h3>
+              <p>
+                Lebih suka komunikasi instan? Hubungi saya secara langsung melalui WhatsApp, Email, atau profil jejaring di bawah ini.
+              </p>
+            </div>
 
             <div className="find-me">
-              <p className="find-me-label">Find Me</p>
+              <p className="find-me-label">Find Me &amp; Direct Chat</p>
               <ul className="social-list">
                 {socials.map((social) => (
                   <li key={social.label}>
@@ -373,140 +332,43 @@ export default function ContactSection({ profile, comments, commentsEnabled }: C
                 {profile.domicile}
               </p>
             </div>
-          </div>
 
-          <div className="comments" aria-labelledby="comments-heading">
-            <div className="comments-head">
-              <h3 id="comments-heading">Komentar</h3>
-              {commentList.length > 0 && <span className="comment-count">{commentList.length}</span>}
-            </div>
-
-            {commentsEnabled ? (
-              <form className="comment-form" onSubmit={handleCommentSubmit}>
-                <div className="field">
-                  <label htmlFor="comment-name">Nama</label>
-                  <input
-                    type="text"
-                    id="comment-name"
-                    name="name"
-                    placeholder="Masukkan nama kamu"
-                    required
-                    minLength={2}
-                    maxLength={50}
-                    value={commentForm.name}
-                    onChange={(e) => setCommentForm({ ...commentForm, name: e.target.value })}
-                    disabled={commentSending}
-                  />
+            {commentList.length > 0 && (
+              <div className="comments" aria-labelledby="comments-heading" style={{ marginTop: '1.5rem', padding: '1rem', border: '1px solid var(--rule)' }}>
+                <div className="comments-head">
+                  <h3 id="comments-heading" style={{ fontSize: '1rem' }}>Komentar Pengunjung</h3>
+                  <span className="comment-count">{commentList.length}</span>
                 </div>
-
-                <div className="field">
-                  <label htmlFor="comment-message">Komentar</label>
-                  <textarea
-                    id="comment-message"
-                    name="message"
-                    placeholder="Tulis komentar kamu di sini..."
-                    required
-                    minLength={2}
-                    maxLength={500}
-                    rows={4}
-                    value={commentForm.message}
-                    onChange={(e) => setCommentForm({ ...commentForm, message: e.target.value })}
-                    disabled={commentSending}
-                  ></textarea>
-                </div>
-
-                <div className="field">
-                  <label htmlFor="comment-photo">Foto Profil (opsional)</label>
-                  <div className="file-control">
-                    <span className="file-trigger">Pilih foto</span>
-                    <span className="file-name">{photo ? photo.name : 'Tidak ada berkas dipilih'}</span>
-                    <input
-                      id="comment-photo"
-                      type="file"
-                      name="photo"
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={onPhotoChange}
-                      disabled={commentSending}
-                    />
-                  </div>
-                  <p className="upload-note">Ukuran file maksimal 5 MB. Format JPG, PNG, atau WebP.</p>
-                  {photoPreview && (
-                    <div className="upload-preview">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={photoPreview} alt="Pratinjau foto profil" width={48} height={48} />
-                      <span>{photo?.name}</span>
-                      <button type="button" className="link-plain" onClick={clearPhoto}>
-                        Batalkan
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <input
-                  type="text"
-                  name="website"
-                  className="honeypot"
-                  tabIndex={-1}
-                  autoComplete="off"
-                  aria-hidden="true"
-                  value={honeypot}
-                  onChange={(e) => setHoneypot(e.target.value)}
-                />
-
-                <button type="submit" className="btn-solid" disabled={commentSending}>
-                  {commentSending && <span className="btn-spinner" aria-hidden="true" />}
-                  {commentSending ? 'Mengirim...' : 'Kirim Komentar'}
-                </button>
-                <p
-                  className={`comment-status${commentFailed ? ' is-error' : ''}`}
-                  role="status"
-                  aria-live="polite"
-                >
-                  {commentStatus || 'Komentar tampil setelah terkirim dan tidak dapat dihapus sendiri.'}
-                </p>
-              </form>
-            ) : (
-              <p className="comments-off">
-                Kolom komentar aktif setelah kredensial Supabase diisi. Sementara itu, silakan gunakan email
-                atau WhatsApp.
-              </p>
-            )}
-
-            {commentList.length > 0 ? (
-              <div className="comment-list" tabIndex={0} aria-label="Daftar komentar">
-                {commentList.map((comment) => (
-                  <article key={comment.id} className="comment">
-                    {comment.photo_url ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        className="comment-avatar"
-                        src={comment.photo_url}
-                        alt={`Foto ${comment.name}`}
-                        width={40}
-                        height={40}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span className="comment-avatar comment-avatar-initial" aria-hidden="true">
-                        {initials(comment.name)}
-                      </span>
-                    )}
-                    <div className="comment-body">
-                      <div className="comment-head">
-                        <strong>{comment.name}</strong>
-                        <time dateTime={comment.created_at}>{relativeTime(comment.created_at)}</time>
+                <div className="comment-list" tabIndex={0} aria-label="Daftar komentar">
+                  {commentList.map((comment) => (
+                    <article key={comment.id} className="comment">
+                      {comment.photo_url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          className="comment-avatar"
+                          src={comment.photo_url}
+                          alt={`Foto ${comment.name}`}
+                          width={40}
+                          height={40}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="comment-avatar comment-avatar-initial" aria-hidden="true">
+                          {initials(comment.name)}
+                        </span>
+                      )}
+                      <div className="comment-body">
+                        <div className="comment-head">
+                          <strong>{comment.name}</strong>
+                          <time dateTime={comment.created_at}>{relativeTime(comment.created_at)}</time>
+                        </div>
+                        <p>{comment.message}</p>
                       </div>
-                      <p>{comment.message}</p>
-                    </div>
-                  </article>
-                ))}
+                    </article>
+                  ))}
+                </div>
               </div>
-            ) : commentsEnabled ? (
-              <div className="comment-empty">
-                <Icon name="mail" />
-                <p>Belum ada komentar. Ruang ini terbuka untuk pesan singkat dari pengunjung.</p>
-              </div>
-            ) : null}
+            )}
           </div>
         </div>
       </div>

@@ -1243,6 +1243,7 @@ button.link-plain {
 }
 
 .contact-intro,
+.contact-details,
 .comments {
   padding: clamp(1.25rem, 2.5vw, 1.9rem);
   background: var(--surface);
@@ -1250,16 +1251,24 @@ button.link-plain {
   border-radius: var(--r-lg);
 }
 
-.contact-intro h3 {
+.contact-intro h3,
+.contact-details-head h3 {
   font-size: var(--step-1);
   margin-bottom: 0.6rem;
 }
 
-.contact-intro > p {
+.contact-intro > p,
+.contact-details-head > p {
   max-width: 44ch;
   font-size: 0.95rem;
   color: var(--ink-muted);
   margin-bottom: 1.5rem;
+}
+
+.contact-details .find-me {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
 }
 
 .find-me {
